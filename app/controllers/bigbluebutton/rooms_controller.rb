@@ -315,13 +315,21 @@ class Bigbluebutton::RoomsController < ApplicationController
   def join_check_can_create
     Rails.logger.debug("join check can create............")
     Rails.logger.debug(@user_role)
+    if @room.fetch_is_running?
+      Rails.logger.debug("It's running.")
+    else
+      Rails.logger.debug("It's not running.")
+    end
     unless @room.fetch_is_running?
+      Rails.logger.debug("Is it running?")
       unless bigbluebutton_can_create?(@room, @user_role)
+        Rails.logger.debug("can create?")
         flash[:error] = t('bigbluebutton_rails.rooms.errors.join.cannot_create')
         redirect_to_on_join_error
       end
     end
   rescue BigBlueButton::BigBlueButtonException => e
+    Rails.logger.debug("Rescued................")
     flash[:error] = e.to_s[0..200]
     redirect_to_on_join_error
   end

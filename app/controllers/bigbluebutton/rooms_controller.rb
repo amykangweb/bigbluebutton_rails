@@ -114,6 +114,8 @@ class Bigbluebutton::RoomsController < ApplicationController
   # Used to join users into a meeting. Most of the work is done in before filters.
   # Can be called via GET or POST and accepts parameters both in the POST data and URL.
   def join
+    Rails.logger.debug("Join.......................")
+    Rails.logger.debug(params[:key])
     @organization = Organization.find_by(primary: params[:org_pk])
     join_internal(@user_name, @user_role, @user_id)
   end
@@ -267,6 +269,9 @@ class Bigbluebutton::RoomsController < ApplicationController
   # be accessed by other methods. Sets the user's name, id and role. Gives priority to
   # a logged user over the information provided in the params.
   def join_user_params
+    Rails.logger.debug("join user params.............")
+    Rails.logger.debug(params[:key])
+    Rails.logger.debug(params[:org_pk])
     # gets the user information, given priority to a possible logged user
     if bigbluebutton_user.nil?
       @user_name = params[:user].blank? ? nil : params[:user][:name]
@@ -301,6 +306,8 @@ class Bigbluebutton::RoomsController < ApplicationController
   def join_check_can_create
     unless @room.fetch_is_running?
       unless bigbluebutton_can_create?(@room, @user_role)
+        Rails.logger.debug("join check can create............")
+        Rails.logger.debug(@user_role)
         flash[:error] = t('bigbluebutton_rails.rooms.errors.join.cannot_create')
         redirect_to_on_join_error
       end
@@ -337,7 +344,9 @@ class Bigbluebutton::RoomsController < ApplicationController
 
   # Default method to redirect after an error in the action `join`.
   def redirect_to_on_join_error
-    redirect_to_using_params_or_back(invite_bigbluebutton_room_path(@room))
+    Rails.logger.debug("redirect to on join error......................")
+    Rails.logger.debug(params[:org_pk])
+    redirect_to_using_params_or_back(invite_bigbluebutton_room_path(@room, org_pk: params[:org_pk]))
   end
 
   # The internal process to join a meeting.

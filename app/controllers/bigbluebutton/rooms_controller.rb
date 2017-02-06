@@ -258,6 +258,9 @@ class Bigbluebutton::RoomsController < ApplicationController
   def join_check_room
     @room ||= BigbluebuttonRoom.find_by_param(params[:id]) unless params[:id].blank?
     if @room.nil?
+      Rails.logger.debug(@room.inspect)
+      Rails.logger.debug("***********************")
+      Rails.logger.debug("Room is nil.")
       message = t('bigbluebutton_rails.rooms.errors.join.wrong_params')
       redirect_to :back, :notice => message
     end

@@ -298,14 +298,14 @@ class BigbluebuttonRoom < ActiveRecord::Base
   # it doesn't save in the db, just updates the instance
   def add_domain_to_logout_url(protocol, host)
     unless logout_url.nil?
-      url = logout_url.downcase
+      url = logout_url
       unless url.nil? or url =~ /^[a-z]+:\/\//           # matches the protocol
         unless url =~ /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*/  # matches the host domain
           url = host + url
         end
         url = protocol + url
       end
-      self.full_logout_url = url.downcase
+      self.full_logout_url = url
     end
   end
 

@@ -300,8 +300,11 @@ class Bigbluebutton::RoomsController < ApplicationController
     Rails.logger.debug(@user_role.inspect)
     Rails.logger.debug("User name")
     Rails.logger.debug(@user_name)
+    Rails.logger.debug(@user_role.nil?)
+    Rails.logger.debug(@user_name.blank?)
 
     if @user_role.nil? or @user_name.blank?
+      Rails.logger.debug("Inside OR")
       flash[:error] = t('bigbluebutton_rails.rooms.errors.join.failure')
       redirect_to_on_join_error
     end

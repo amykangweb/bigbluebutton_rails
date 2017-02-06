@@ -19,6 +19,7 @@ class Bigbluebutton::RoomsController < ApplicationController
 
   def index
     @rooms ||= BigbluebuttonRoom.all
+    @organization = Organization.find_by(primary: params[:org_pk])
     respond_with(@rooms)
   end
 
@@ -269,7 +270,7 @@ class Bigbluebutton::RoomsController < ApplicationController
       @user_name = params[:user].blank? ? nil : params[:user][:name]
       @user_id = nil
     else
-      @user_name = bigbluebutton_user.name
+      @user_name = bigbluebutton_user.first_name + " " + bigbluebutton_user.last_name
       @user_id = bigbluebutton_user.id
     end
 

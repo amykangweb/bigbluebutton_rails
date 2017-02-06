@@ -4,7 +4,7 @@ require 'bigbluebutton_api'
 class Bigbluebutton::RoomsController < ApplicationController
   include BigbluebuttonRails::InternalControllerMethods
 
-  before_filter :find_room, :except => [:index, :create, :new, :join]
+  before_filter :find_room, :except => [:index, :create, :new]
 
   # set headers only in actions that might trigger api calls
   before_filter :set_request_headers, :only => [:join_mobile, :end, :running, :join, :destroy]
@@ -258,9 +258,6 @@ class Bigbluebutton::RoomsController < ApplicationController
   def join_check_room
     @room ||= BigbluebuttonRoom.find_by_param(params[:id]) unless params[:id].blank?
     if @room.nil?
-      Rails.logger.debug(@room.inspect)
-      Rails.logger.debug("***********************")
-      Rails.logger.debug("Room is nil.")
       message = t('bigbluebutton_rails.rooms.errors.join.wrong_params')
       redirect_to :back, :notice => message
     end
@@ -281,11 +278,16 @@ class Bigbluebutton::RoomsController < ApplicationController
 
     # the role: nil means access denied, :key means check the room
     # key, otherwise just use it
-    @user_role = bigbluebutton_role(@room)
+    if params[:key] == @room.attendee_key
+      @user_role = :attendee
+    elsif params[:key] == @room.moderator_key
+      @user_role = :moderator
+    else
+      @user_role = nil
+    end
+
     if @user_role.nil?
       raise BigbluebuttonRails::RoomAccessDenied.new
-    elsif @user_role == :key
-      @user_role = @room.user_role(params[:user])
     end
 
     if @user_role.nil? or @user_name.blank?
@@ -394,7 +396,7 @@ class Bigbluebutton::RoomsController < ApplicationController
   end
 
   def room_allowed_params
-    [ :name, :org_pk, :server_id, :meetingid, :attendee_key, :moderator_key, :welcome_msg,
+    [ :name, :key, :org_pk, :server_id, :meetingid, :attendee_key, :moderator_key, :welcome_msg,
       :private, :logout_url, :dial_number, :voice_bridge, :max_participants, :owner_id,
       :owner_type, :external, :param, :record_meeting, :duration, :default_layout, :presenter_share_only,
       :auto_start_video, :auto_start_audio, :background,

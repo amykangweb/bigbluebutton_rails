@@ -114,6 +114,7 @@ class Bigbluebutton::RoomsController < ApplicationController
   # Used to join users into a meeting. Most of the work is done in before filters.
   # Can be called via GET or POST and accepts parameters both in the POST data and URL.
   def join
+    @organization = Organization.find_by(primary: params[:org_pk])
     join_internal(@user_name, @user_role, @user_id)
   end
 
@@ -389,7 +390,7 @@ class Bigbluebutton::RoomsController < ApplicationController
   end
 
   def room_allowed_params
-    [ :name, :server_id, :meetingid, :attendee_key, :moderator_key, :welcome_msg,
+    [ :name, :org_pk, :server_id, :meetingid, :attendee_key, :moderator_key, :welcome_msg,
       :private, :logout_url, :dial_number, :voice_bridge, :max_participants, :owner_id,
       :owner_type, :external, :param, :record_meeting, :duration, :default_layout, :presenter_share_only,
       :auto_start_video, :auto_start_audio, :background,

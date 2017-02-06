@@ -322,10 +322,8 @@ class Bigbluebutton::RoomsController < ApplicationController
       end
     end
   rescue BigBlueButton::BigBlueButtonException => e
-    Rails.logger.debug("Exception....................")
-    Rails.logger.debug(e.to_s)
-    # flash[:error] = e.to_s[0..200]
-    # redirect_to_on_join_error
+    flash[:error] = e.to_s[0..200]
+    redirect_to_on_join_error
   end
 
   # If the user called the join from a mobile device, he will be redirected to
@@ -357,7 +355,7 @@ class Bigbluebutton::RoomsController < ApplicationController
   def redirect_to_on_join_error
     Rails.logger.debug("redirect to on join error......................")
     Rails.logger.debug(params[:org_pk])
-    redirect_to invite_bigbluebutton_room_path(@room, org_pk: params[:org_pk])
+    redirect_to_using_params_or_back(invite_bigbluebutton_room_path(@room, org_pk: params[:org_pk]))
   end
 
   # The internal process to join a meeting.
@@ -407,51 +405,8 @@ class Bigbluebutton::RoomsController < ApplicationController
       end
 
     rescue BigBlueButton::BigBlueButtonException => e
-      Rails.logger.debug("Join Internal rescue error.............")
-      Rails.logger.debug(e.to_s)
-      #flash[:error] = e.to_s[0..200]
-      #redirect_to_on_join_error
-      # first check if we have to create the room and if the user can do it
-      unless @room.fetch_is_running?
-        Rails.logger.debug("Room is not running...............")
-        if bigbluebutton_can_create?(@room, role)
-          Rails.logger.debug("User can create meeting.")
-          user_opts = bigbluebutton_create_options(@room)
-          Rails.logger.debug(user_opts)
-          if @room.create_meeting(bigbluebutton_user, request, user_opts)
-            Rails.logger.debug("Meeting created...............")
-            logger.info "Meeting created: id: #{@room.meetingid}, name: #{@room.name}, created_by: #{username}, time: #{Time.now.iso8601}"
-          end
-        else
-          flash[:error] = t('bigbluebutton_rails.rooms.errors.join.cannot_create')
-          redirect_to_on_join_error
-          return
-        end
-      end
-
-      # gets the token with the configurations for this user/room
-      token = @room.fetch_new_token
-      options = if token.nil? then {} else { :configToken => token } end
-
-      # set the create time and the user id, if they exist
-      options.merge!({ createTime: @room.create_time }) unless @room.create_time.blank?
-      options.merge!({ userID: id }) unless id.blank?
-
-      # room created and running, try to join it
-      url = @room.join_url(username, role, nil, options)
-      unless url.nil?
-
-        # change the protocol to join with a mobile device
-        if BigbluebuttonRails.use_mobile_client?(browser) &&
-           !BigbluebuttonRails.value_to_boolean(params[:desktop])
-          url.gsub!(/^[^:]*:\/\//i, "bigbluebutton://")
-        end
-
-        redirect_to url
-      else
-        flash[:error] = t('bigbluebutton_rails.rooms.errors.join.not_running')
-        redirect_to_on_join_error
-      end
+      flash[:error] = e.to_s[0..200]
+      redirect_to_on_join_error
     end
   end
 

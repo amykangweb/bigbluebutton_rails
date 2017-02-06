@@ -323,8 +323,9 @@ class Bigbluebutton::RoomsController < ApplicationController
     end
   rescue BigBlueButton::BigBlueButtonException => e
     Rails.logger.debug("Exception....................")
-    flash[:error] = e.to_s[0..200]
-    redirect_to_on_join_error
+    Rails.logger.debug(e.to_s)
+    # flash[:error] = e.to_s[0..200]
+    # redirect_to_on_join_error
   end
 
   # If the user called the join from a mobile device, he will be redirected to

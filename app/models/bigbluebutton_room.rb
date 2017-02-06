@@ -553,7 +553,7 @@ class BigbluebuttonRoom < ActiveRecord::Base
     # Add information about the user that is creating the meeting (if any)
     unless user.nil?
       userid = user.send(BigbluebuttonRails.user_attr_id)
-      username = user.send(BigbluebuttonRails.user_attr_name)
+      username = user.first_name + " " + user.last_name
       opts.merge!({ "meta_#{BigbluebuttonRails.metadata_user_id}" => userid })
       opts.merge!({ "meta_#{BigbluebuttonRails.metadata_user_name}" => username })
     end

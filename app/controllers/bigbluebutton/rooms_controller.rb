@@ -313,15 +313,16 @@ class Bigbluebutton::RoomsController < ApplicationController
   # Aborts and redirects to an error if the user can't create a meeting in
   # the room and it needs to be created.
   def join_check_can_create
+    Rails.logger.debug("join check can create............")
+    Rails.logger.debug(@user_role)
     unless @room.fetch_is_running?
       unless bigbluebutton_can_create?(@room, @user_role)
-        Rails.logger.debug("join check can create............")
-        Rails.logger.debug(@user_role)
         flash[:error] = t('bigbluebutton_rails.rooms.errors.join.cannot_create')
         redirect_to_on_join_error
       end
     end
   rescue BigBlueButton::BigBlueButtonException => e
+    Rails.logger.debug("Exception....................")
     flash[:error] = e.to_s[0..200]
     redirect_to_on_join_error
   end

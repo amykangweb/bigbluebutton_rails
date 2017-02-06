@@ -361,12 +361,17 @@ class Bigbluebutton::RoomsController < ApplicationController
 
   # The internal process to join a meeting.
   def join_internal(username, role, id)
+    Rails.logger.debug("Join Internal................")
     begin
       # first check if we have to create the room and if the user can do it
       unless @room.fetch_is_running?
+        Rails.logger.debug("Room is not running...............")
         if bigbluebutton_can_create?(@room, role)
+          Rails.logger.debug("User can create meeting.")
           user_opts = bigbluebutton_create_options(@room)
+          Rails.logger.debug(user_opts)
           if @room.create_meeting(bigbluebutton_user, request, user_opts)
+            Rails.logger.debug("Meeting created...............")
             logger.info "Meeting created: id: #{@room.meetingid}, name: #{@room.name}, created_by: #{username}, time: #{Time.now.iso8601}"
           end
         else

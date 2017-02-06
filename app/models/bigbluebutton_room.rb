@@ -179,6 +179,7 @@ class BigbluebuttonRoom < ActiveRecord::Base
   #
   # Triggers API call: <tt>create</tt>.
   def send_create(user=nil, user_opts={})
+    Rails.logger.debug("Send Create.....................")
     # updates the server whenever a meeting will be created and guarantees it has a meetingid
     require_server :create
 
@@ -277,8 +278,10 @@ class BigbluebuttonRoom < ActiveRecord::Base
   # Will create the meeting in this room unless it is already running.
   # Returns true if the meeting was created.
   def create_meeting(user=nil, request=nil, user_opts={})
+    Rails.logger.debug("Create meeting.................")
     fetch_is_running?
     unless is_running?
+      Rails.logger.debug("TRUE")
 
       # in case the meeting is not running but it's still in memory
       suppress(BigBlueButton::BigBlueButtonException) { send_end }

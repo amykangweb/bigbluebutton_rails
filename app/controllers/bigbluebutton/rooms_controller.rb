@@ -120,6 +120,7 @@ class Bigbluebutton::RoomsController < ApplicationController
 
   # Used to join private rooms or to invite anonymous users (not logged)
   def invite
+    @organization = Organization.find_by(primary: params[:org_pk])
     respond_with @room do |format|
 
       @user_role = bigbluebutton_role(@room)

@@ -272,6 +272,7 @@ class Bigbluebutton::RoomsController < ApplicationController
     Rails.logger.debug("join user params.............")
     Rails.logger.debug(params[:key])
     Rails.logger.debug(params[:org_pk])
+    Rails.logger.debug(bigbluebutton_user.inspect)
     # gets the user information, given priority to a possible logged user
     if bigbluebutton_user.nil?
       @user_name = params[:user].blank? ? nil : params[:user][:name]
@@ -294,6 +295,11 @@ class Bigbluebutton::RoomsController < ApplicationController
     if @user_role.nil?
       raise BigbluebuttonRails::RoomAccessDenied.new
     end
+
+    Rails.logger.debug("User Role")
+    Rails.logger.debug(@user_role.inspect)
+    Rails.logger.debug("User name")
+    Rails.logger.debug(@user_name)
 
     if @user_role.nil? or @user_name.blank?
       flash[:error] = t('bigbluebutton_rails.rooms.errors.join.failure')

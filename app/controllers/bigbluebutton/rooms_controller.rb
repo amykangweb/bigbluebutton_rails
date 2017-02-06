@@ -356,7 +356,7 @@ class Bigbluebutton::RoomsController < ApplicationController
   def redirect_to_on_join_error
     Rails.logger.debug("redirect to on join error......................")
     Rails.logger.debug(params[:org_pk])
-    redirect_to_using_params_or_back(invite_bigbluebutton_room_path(@room, org_pk: params[:org_pk]))
+    redirect_to invite_bigbluebutton_room_path(@room, org_pk: params[:org_pk])
   end
 
   # The internal process to join a meeting.

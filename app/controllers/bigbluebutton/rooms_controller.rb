@@ -178,7 +178,6 @@ class Bigbluebutton::RoomsController < ApplicationController
         format.json { render :json => message }
       end
     end
-
   end
 
   def join_mobile
@@ -427,7 +426,7 @@ class Bigbluebutton::RoomsController < ApplicationController
   end
 
   def room_allowed_params
-    [ :name, :key, :org_pk, :server_id, :meetingid, :attendee_key, :moderator_key, :welcome_msg,
+    [ :notify, :name, :key, :org_pk, :server_id, :meetingid, :attendee_key, :moderator_key, :welcome_msg,
       :private, :logout_url, :dial_number, :voice_bridge, :max_participants, :owner_id,
       :owner_type, :external, :param, :record_meeting, :duration, :default_layout, :presenter_share_only,
       :auto_start_video, :auto_start_audio, :background,

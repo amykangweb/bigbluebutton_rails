@@ -114,8 +114,6 @@ class Bigbluebutton::RoomsController < ApplicationController
   # Used to join users into a meeting. Most of the work is done in before filters.
   # Can be called via GET or POST and accepts parameters both in the POST data and URL.
   def join
-    Rails.logger.debug("Join.......................")
-    Rails.logger.debug(params[:key])
     @organization = Organization.find_by(primary: params[:org_pk])
     join_internal(@user_name, @user_role, @user_id)
   end
@@ -181,6 +179,9 @@ class Bigbluebutton::RoomsController < ApplicationController
   end
 
   def join_mobile
+    Rails.logger.debug("------------- Join Mobile -------------")
+    Rails.logger.debug(params[:org_pk])
+    @organization = Organization.find_by(primary: params[:org_pk])
     filtered_params = select_params_for_join_mobile(params.clone)
     @join_mobile = join_bigbluebutton_room_url(@room, filtered_params.merge({:auto_join => '1' }))
     @join_desktop = join_bigbluebutton_room_url(@room, filtered_params.merge({:desktop => '1' }))
@@ -268,10 +269,6 @@ class Bigbluebutton::RoomsController < ApplicationController
   # be accessed by other methods. Sets the user's name, id and role. Gives priority to
   # a logged user over the information provided in the params.
   def join_user_params
-    Rails.logger.debug("join user params.............")
-    Rails.logger.debug(params[:key])
-    Rails.logger.debug(params[:org_pk])
-    Rails.logger.debug(bigbluebutton_user.inspect)
     # gets the user information, given priority to a possible logged user
     if bigbluebutton_user.nil?
       @user_name = params[:user].blank? ? nil : params[:user][:name]
@@ -360,8 +357,6 @@ class Bigbluebutton::RoomsController < ApplicationController
 
   # Default method to redirect after an error in the action `join`.
   def redirect_to_on_join_error
-    Rails.logger.debug("redirect to on join error......................")
-    Rails.logger.debug(params[:org_pk])
     redirect_to_using_params_or_back(invite_bigbluebutton_room_path(@room, org_pk: params[:org_pk]))
   end
 

@@ -334,6 +334,8 @@ class Bigbluebutton::RoomsController < ApplicationController
   # an intermediary page with information about the mobile client. A few flags set
   # in the params can override this behavior and skip this intermediary page.
   def join_check_redirect_to_mobile
+    Rails.logger.debug("-------- check redirect to mobile ----------")
+    Rails.logger.debug(params[:org_pk])
     return if !BigbluebuttonRails.use_mobile_client?(browser) ||
               BigbluebuttonRails.value_to_boolean(params[:auto_join]) ||
               BigbluebuttonRails.value_to_boolean(params[:desktop])
@@ -346,7 +348,7 @@ class Bigbluebutton::RoomsController < ApplicationController
     rescue
     end
 
-    redirect_to join_mobile_bigbluebutton_room_path(@room, filtered_params)
+    redirect_to join_mobile_bigbluebutton_room_path(@room, org_pk: params[:org_pk], filtered_params)
   end
 
   # Selects the params from `params` that should be passed in a redirect to `join_mobile` and

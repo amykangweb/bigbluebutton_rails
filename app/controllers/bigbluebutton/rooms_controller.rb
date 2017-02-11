@@ -277,24 +277,11 @@ class Bigbluebutton::RoomsController < ApplicationController
 
     # the role: nil means access denied, :key means check the room
     # key, otherwise just use it
-    if params[:key] == @room.attendee_key
-      @user_role = :attendee
-    elsif params[:key] == @room.moderator_key
-      @user_role = :moderator
-    else
-      @user_role = nil
-    end
+    @user_role = :moderator
 
     if @user_role.nil?
       raise BigbluebuttonRails::RoomAccessDenied.new
     end
-
-    Rails.logger.debug("User Role")
-    Rails.logger.debug(@user_role.inspect)
-    Rails.logger.debug("User name")
-    Rails.logger.debug(@user_name)
-    Rails.logger.debug(@user_role.nil?)
-    Rails.logger.debug(@user_name.blank?)
 
     if @user_role.nil? or @user_name.blank?
       Rails.logger.debug("Inside OR")

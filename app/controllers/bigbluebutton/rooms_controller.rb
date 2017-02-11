@@ -330,7 +330,7 @@ class Bigbluebutton::RoomsController < ApplicationController
     rescue
     end
 
-    redirect_to join_mobile_room_path(@room, filtered_params)
+    redirect_to join_mobile_bigbluebutton_room_path(@room, filtered_params)
   end
 
   # Selects the params from `params` that should be passed in a redirect to `join_mobile` and
@@ -381,7 +381,7 @@ class Bigbluebutton::RoomsController < ApplicationController
         # change the protocol to join with a mobile device
         if BigbluebuttonRails.use_mobile_client?(browser) &&
            !BigbluebuttonRails.value_to_boolean(params[:desktop])
-          url.gsub!(/^[^:]*:\/\//i, "bigbluebutton://")
+          url.gsub!(/^[^:]*:\/\//i, "http://")
         end
 
         redirect_to url

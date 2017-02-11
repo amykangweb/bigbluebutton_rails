@@ -329,7 +329,8 @@ class Bigbluebutton::RoomsController < ApplicationController
       filtered_params[:redir_url] = Addressable::URI.parse(request.env["HTTP_REFERER"]).path
     rescue
     end
-
+    Rails.logger.debug("-------- Check join mobile path ---------------")
+    Rails.logger.debug(join_mobile_bigbluebutton_room_path(@room, filtered_params))
     redirect_to join_mobile_bigbluebutton_room_path(@room, filtered_params)
   end
 

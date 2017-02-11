@@ -179,9 +179,6 @@ class Bigbluebutton::RoomsController < ApplicationController
   end
 
   def join_mobile
-    Rails.logger.debug("------------- Join Mobile -------------")
-    Rails.logger.debug(params[:org_pk])
-    @organization = Organization.find_by(primary: params[:org_pk])
     filtered_params = select_params_for_join_mobile(params.clone)
     @join_mobile = join_bigbluebutton_room_url(@room, filtered_params.merge({:auto_join => '1' }))
     @join_desktop = join_bigbluebutton_room_url(@room, filtered_params.merge({:desktop => '1' }))
@@ -334,9 +331,6 @@ class Bigbluebutton::RoomsController < ApplicationController
   # an intermediary page with information about the mobile client. A few flags set
   # in the params can override this behavior and skip this intermediary page.
   def join_check_redirect_to_mobile
-    Rails.logger.debug("-------- check redirect to mobile ----------")
-    Rails.logger.debug(params[:org_pk])
-    @organization = Organization.find_by(primary: params[:org_pk])
     return if !BigbluebuttonRails.use_mobile_client?(browser) ||
               BigbluebuttonRails.value_to_boolean(params[:auto_join]) ||
               BigbluebuttonRails.value_to_boolean(params[:desktop])
@@ -349,7 +343,7 @@ class Bigbluebutton::RoomsController < ApplicationController
     rescue
     end
 
-    redirect_to join_mobile_bigbluebutton_room_path(@room, org_pk: @organization.primary, filtered_params)
+    redirect_to join_mobile_bigbluebutton_room_path(@room, filtered_params)
   end
 
   # Selects the params from `params` that should be passed in a redirect to `join_mobile` and

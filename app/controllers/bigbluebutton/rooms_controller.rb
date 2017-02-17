@@ -115,6 +115,9 @@ class Bigbluebutton::RoomsController < ApplicationController
   # Can be called via GET or POST and accepts parameters both in the POST data and URL.
   def join
     @organization = Organization.find_by(primary: params[:org_pk])
+    if Membership.find_member_record(current_user, @organization).nil?
+      redirect_to root_path and return
+    end
     join_internal(@user_name, @user_role, @user_id)
   end
 

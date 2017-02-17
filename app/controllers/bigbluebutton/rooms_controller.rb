@@ -118,7 +118,7 @@ class Bigbluebutton::RoomsController < ApplicationController
     if Membership.find_member_record(current_user, @organization).nil?
       redirect_to root_path and return
     end
-    if !@organization.bigbluebutton_rooms.includes?(@room)
+    if !@organization.bigbluebutton_rooms.include?(@room)
       redirect_to root_path and return
     end
     join_internal(@user_name, @user_role, @user_id)
